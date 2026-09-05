@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}सम्पर्क गर्नुहोस् — {{ business_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:700px;">
+    <div class="section-header">
+      <h1>सम्पर्क गर्नुहोस्</h1>
+      <p>हामीलाई सन्देश पठाउनुहोस् वा सोझै सम्पर्क गर्नुहोस्</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;" class="contact-info-grid">
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--shadow);">
+        <h3 style="margin:0 0 0.5rem;"><i class="fas fa-map-marker-alt" style="color:var(--achar-red);"></i> ठेगाना</h3>
+        <p style="margin:0;">{{ site_settings.get('address', 'Urlabari, Morang, Nepal') }}</p>
+      </div>
+      {% if site_settings.get('phone') %}
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--shadow);">
+        <h3 style="margin:0 0 0.5rem;"><i class="fas fa-phone" style="color:var(--achar-red);"></i> फोन</h3>
+        <p style="margin:0;"><a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a></p>
+      </div>
+      {% endif %}
+      {% if site_settings.get('email') %}
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--shadow);">
+        <h3 style="margin:0 0 0.5rem;"><i class="fas fa-envelope" style="color:var(--achar-red);"></i> इमेल</h3>
+        <p style="margin:0;"><a href="mailto:{{ site_settings.email }}">{{ site_settings.email }}</a></p>
+      </div>
+      {% endif %}
+      {% if site_settings.get('whatsapp_number') %}
+      <div style="background:white;padding:1.5rem;border-radius:12px;box-shadow:var(--shadow);">
+        <h3 style="margin:0 0 0.5rem;"><i class="fab fa-whatsapp" style="color:#25D366;"></i> WhatsApp</h3>
+        <p style="margin:0;"><a href="https://wa.me/{{ site_settings.whatsapp_number }}" target="_blank" rel="noopener">सन्देश पठाउनुहोस्</a></p>
+      </div>
+      {% endif %}
+    </div>
+
+    <form method="post" style="background:white;padding:1.5rem;border-radius:16px;box-shadow:var(--shadow);">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="name">नाम</label>
+        <input type="text" id="name" name="name" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">मोबाइल</label>
+        <input type="tel" id="phone" name="phone" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="message">सन्देश</label>
+        <textarea id="message" name="message" class="form-control" rows="4" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">पठाउनुहोस्</button>
+    </form>
+
+    {% if site_settings.get('google_maps_url') %}
+    <div style="margin-top:2rem;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);">
+      <iframe
+        src="{{ site_settings.google_maps_url if 'embed' in site_settings.google_maps_url else 'https://maps.google.com/maps?q=Urlabari,Morang,Nepal&output=embed' }}"
+        width="100%" height="300" style="border:0;" allowfullscreen loading="lazy"
+        title="स्थान नक्सा"></iframe>
+    </div>
+    {% endif %}
+  </div>
+</section>
+<style>
+@media (max-width: 600px) {
+  .contact-info-grid { grid-template-columns: 1fr !important; }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}अर्डर पूरा गर्नुहोस् — {{ business_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    <h1 style="margin-bottom:1.5rem;">अर्डर पूरा गर्नुहोस्</h1>
+    <form method="post" action="{{ url_for('orders.checkout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div style="background:white;padding:1.5rem;border-radius:16px;box-shadow:var(--shadow);margin-bottom:1.5rem;">
+        <h3 style="margin-top:0;">ग्राहक जानकारी</h3>
+        <div class="form-group">
+          <label for="customer_name">पूरा नाम *</label>
+          <input type="text" id="customer_name" name="customer_name" class="form-control" required value="{{ form.get('customer_name', '') }}">
+        </div>
+        <div class="form-group">
+          <label for="phone">मोबाइल नम्बर *</label>
+          <input type="tel" id="phone" name="phone" class="form-control" required pattern="[0-9]{10,}" value="{{ form.get('phone', '') }}" placeholder="98XXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label>डेलिभरी विधि *</label>
+          <div style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+            {% if delivery_enabled %}
+            <label style="font-weight:500;"><input type="radio" name="delivery_method" value="delivery" checked> डेलिभरी</label>
+            {% endif %}
+            {% if pickup_enabled %}
+            <label style="font-weight:500;"><input type="radio" name="delivery_method" value="pickup" {% if not delivery_enabled %}checked{% endif %}> आफैं लिनुहोस्</label>
+            {% endif %}
+          </div>
+        </div>
+        <div id="address-fields">
+          <div class="form-group">
+            <label for="address">ठेगाना *</label>
+            <input type="text" id="address" name="address" class="form-control" value="{{ form.get('address', '') }}">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="ward">वडा नम्बर</label>
+              <input type="text" id="ward" name="ward" class="form-control" value="{{ form.get('ward', '') }}">
+            </div>
+            <div class="form-group">
+              <label for="locality">टोल</label>
+              <input type="text" id="locality" name="locality" class="form-control" value="{{ form.get('locality', '') }}">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="city">शहर</label>
+            <input type="text" id="city" name="city" class="form-control" value="{{ form.get('city', 'Urlabari') }}">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="notes">अर्डर नोट</label>
+          <textarea id="notes" name="notes" class="form-control" rows="2">{{ form.get('notes', '') }}</textarea>
+        </div>
+      </div>
+
+      <div style="background:white;padding:1.5rem;border-radius:16px;box-shadow:var(--shadow);margin-bottom:1.5rem;">
+        <h3 style="margin-top:0;">भुक्तानी विधि</h3>
+        {% if payment_cod %}
+        <label style="display:block;margin-bottom:0.75rem;font-weight:500;"><input type="radio" name="payment_method" value="cod" checked> नगदमा भुक्तानी (COD)</label>
+        {% endif %}
+        {% if payment_bank %}
+        <label style="display:block;margin-bottom:0.75rem;font-weight:500;"><input type="radio" name="payment_method" value="bank"> बैंक ट्रान्सफर</label>
+        {% if settings.get('payment_bank_info') %}
+        <p style="font-size:0.85rem;color:#666;margin:0 0 0.75rem 1.5rem;">{{ settings.payment_bank_info }}</p>
+        {% endif %}
+        {% endif %}
+        {% if payment_qr %}
+        <label style="display:block;margin-bottom:0.75rem;font-weight:500;"><input type="radio" name="payment_method" value="qr"> QR भुक्तानी</label>
+        {% if settings.get('payment_qr_info') %}
+        <p style="font-size:0.85rem;color:#666;margin:0 0 0.75rem 1.5rem;">{{ settings.payment_qr_info }}</p>
+        {% endif %}
+        {% endif %}
+      </div>
+
+      <div class="cart-summary" style="margin-bottom:1.5rem;">
+        <div class="cart-summary-row"><span>उप-जम्मा</span><span>रु. {{ '{:,.0f}'.format(subtotal|float) }}</span></div>
+        <div class="cart-summary-row"><span>डेलिभरी</span><span>रु. {{ '{:,.0f}'.format(delivery_charge|float) }}</span></div>
+        <div class="cart-summary-row cart-summary-total"><span>जम्मा</span><span>रु. {{ '{:,.0f}'.format(total|float) }}</span></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="font-size:1.1rem;padding:1rem;">
+        अर्डर पुष्टि गर्नुहोस्
+      </button>
+    </form>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Orders{% endblock %}
+{% block content %}
+<h1>Orders</h1>
+<div style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+  <a href="{{ url_for('admin.orders') }}" class="btn btn-sm {% if not current_status %}btn-primary{% else %}btn-secondary{% endif %}">All</a>
+  {% for s in ['pending','confirmed','preparing','ready','out_for_delivery','delivered','cancelled'] %}
+  <a href="{{ url_for('admin.orders', status=s) }}" class="btn btn-sm {% if current_status == s %}btn-primary{% else %}btn-secondary{% endif %}">{{ s }}</a>
+  {% endfor %}
+</div>
+<table class="table-admin">
+  <thead>
+    <tr><th>Order #</th><th>Customer</th><th>Phone</th><th>Total</th><th>Status</th><th>Date</th></tr>
+  </thead>
+  <tbody>
+  {% for o in orders %}
+  <tr>
+    <td><a href="{{ url_for('admin.order_detail', id=o.id) }}">{{ o.order_number }}</a></td>
+    <td>{{ o.customer_name }}</td>
+    <td>{{ o.phone }}</td>
+    <td>रु. {{ '{:,.0f}'.format(o.total|float) }}</td>
+    <td><span class="badge badge-{{ o.status }}">{{ o.status }}</span></td>
+    <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') if o.created_at else '' }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6">No orders.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

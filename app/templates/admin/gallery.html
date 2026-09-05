@@ -1,0 +1,24 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Gallery{% endblock %}
+{% block content %}
+<h1>Gallery</h1>
+<form method="post" action="{{ url_for('admin.gallery_upload') }}" enctype="multipart/form-data" style="background:white;padding:1rem;border-radius:12px;margin-bottom:1.5rem;max-width:400px;">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-group"><label>Title</label><input type="text" name="title" class="form-control"></div>
+  <div class="form-group"><label>Image *</label><input type="file" name="image" accept="image/*" required class="form-control"></div>
+  <button type="submit" class="btn btn-primary btn-sm">Upload</button>
+</form>
+<div class="gallery-grid">
+{% for img in images %}
+  <div style="position:relative;">
+    <div class="gallery-item"><img src="{{ img.image_url }}" alt="{{ img.title or '' }}"></div>
+    <form method="post" action="{{ url_for('admin.gallery_delete', id=img.id) }}" onsubmit="return confirm('Delete?');" style="margin-top:0.5rem;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-sm" style="background:#c0392b;color:white;">Delete</button>
+    </form>
+  </div>
+{% else %}
+<p>No images yet.</p>
+{% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}हाम्रो बारेमा — {{ business_name }}{% endblock %}
+{% block meta_desc %}Puku Kosheli Hub को कथा — Urlabari बाट परम्परागत नेपाली अचार।{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:800px;">
+    <div class="section-header">
+      <h1>हाम्रो बारेमा</h1>
+    </div>
+
+    <div style="background:white;padding:2rem;border-radius:16px;box-shadow:var(--shadow);margin-bottom:2rem;">
+      <h2>हाम्रो कथा</h2>
+      <p>{{ site_settings.get('about_text', 'Puku Kosheli Hub ले घरको स्वाद र गुणस्तरीय सामग्रीबाट तयार पारिएको अचार उपलब्ध गराउँछ। Urlabari, Morang बाट हामी परम्परागत नेपाली अचार तयार गर्छौं।') }}</p>
+    </div>
+
+    <div style="background:white;padding:2rem;border-radius:16px;box-shadow:var(--shadow);margin-bottom:2rem;">
+      <h2>हामी को हौं?</h2>
+      <p>हामी स्थानीय परिवारद्वारा सञ्चालित अचार ब्रान्ड हौं। हाम्रो लक्ष्य सरल छ — घरको स्वादलाई तपाईंको टेबलसम्म पुर्‍याउनु।</p>
+    </div>
+
+    <div style="background:white;padding:2rem;border-radius:16px;box-shadow:var(--shadow);margin-bottom:2rem;">
+      <h2>हाम्रो अचार किन फरक छ?</h2>
+      <ul style="line-height:2;">
+        <li><strong>स्थानीय स्वाद</strong> — नेपाली परम्परा अनुसार तयार</li>
+        <li><strong>गुणस्तर</strong> — छानिएका सामग्री मात्र</li>
+        <li><strong>सफाइ</strong> — सफा वातावरणमा तयारी</li>
+        <li><strong>ग्राहकप्रति प्रतिबद्धता</strong> — तपाईंको सन्तुष्टि हाम्रो प्राथमिकता</li>
+      </ul>
+    </div>
+
+    <div class="text-center">
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-primary">अचार हेर्नुहोस्</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

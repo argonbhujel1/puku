@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ne">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}{{ business_name }} — घरको स्वाद, अचारको असली मज्जा{% endblock %}</title>
+  <meta name="description" content="{% block meta_desc %}Puku Kosheli Hub Urlabari — परम्परागत नेपाली अचार। घरको स्वाद, गुणस्तरीय सामग्री।{% endblock %}">
+  <link rel="canonical" href="{% block canonical %}{{ request.url_root.rstrip('/') }}{{ request.path }}{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ business_name }}{% endblock %}">
+  <meta property="og:description" content="{% block og_desc %}घरको स्वाद, अचारको असली मज्जा — Urlabari, Morang{% endblock %}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.url }}">
+  <meta property="og:locale" content="ne_NP">
+  {% block extra_head %}{% endblock %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block structured_data %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "{{ business_name }}",
+    "description": "परम्परागत नेपाली अचार — Urlabari, Morang",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Urlabari",
+      "addressRegion": "Morang",
+      "addressCountry": "NP"
+    },
+    "url": "{{ request.url_root }}"
+  }
+  </script>
+  {% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="{{ url_for('main.home') }}" class="logo">
+        PUKU <span>KOSHELI</span> HUB
+        <span class="logo-sub">Urlabari · अचार</span>
+      </a>
+      <nav class="nav-desktop" aria-label="मुख्य मेनु">
+        <a href="{{ url_for('main.home') }}" class="{% if request.endpoint == 'main.home' %}active{% endif %}">गृहपृष्ठ</a>
+        <a href="{{ url_for('products.list_products') }}" class="{% if request.endpoint and request.endpoint.startswith('products') %}active{% endif %}">अचारहरू</a>
+        <a href="{{ url_for('main.about') }}">हाम्रो बारेमा</a>
+        <a href="{{ url_for('main.gallery') }}">ग्यालेरी</a>
+        <a href="{{ url_for('main.contact') }}">सम्पर्क</a>
+      </nav>
+      <div class="header-actions">
+        <a href="{{ url_for('cart.view_cart') }}" class="cart-btn" aria-label="किनमेल झोला">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-badge" style="{% if cart_count == 0 %}display:none{% endif %}">{{ cart_count }}</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="मेनु" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="मोबाइल मेनु">
+      <a href="{{ url_for('main.home') }}">गृहपृष्ठ</a>
+      <a href="{{ url_for('products.list_products') }}">अचारहरू</a>
+      <a href="{{ url_for('main.about') }}">हाम्रो बारेमा</a>
+      <a href="{{ url_for('main.gallery') }}">ग्यालेरी</a>
+      <a href="{{ url_for('main.contact') }}">सम्पर्क</a>
+      <a href="{{ url_for('main.track_order') }}">अर्डर ट्र्याक</a>
+      <a href="{{ url_for('cart.view_cart') }}">किनमेल झोला ({{ cart_count }})</a>
+    </nav>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="container" style="padding-top:1rem;">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <h3>Puku Kosheli Hub</h3>
+          <p>{{ site_settings.get('footer_text', 'घरको स्वाद, अचारको असली मज्जा। Urlabari, Morang बाट तयार।') }}</p>
+          <div class="social-links">
+            {% if site_settings.get('tiktok_url') %}
+            <a href="{{ site_settings.tiktok_url }}" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            {% endif %}
+            {% if site_settings.get('facebook_url') %}
+            <a href="{{ site_settings.facebook_url }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            {% endif %}
+            {% if site_settings.get('instagram_url') %}
+            <a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            {% endif %}
+            {% if site_settings.get('whatsapp_number') %}
+            <a href="https://wa.me/{{ site_settings.whatsapp_number }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            {% endif %}
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>लिङ्कहरू</h4>
+          <ul>
+            <li><a href="{{ url_for('main.home') }}">गृहपृष्ठ</a></li>
+            <li><a href="{{ url_for('products.list_products') }}">अचारहरू</a></li>
+            <li><a href="{{ url_for('main.about') }}">हाम्रो बारेमा</a></li>
+            <li><a href="{{ url_for('main.gallery') }}">ग्यालेरी</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>सहायता</h4>
+          <ul>
+            <li><a href="{{ url_for('main.contact') }}">सम्पर्क</a></li>
+            <li><a href="{{ url_for('main.track_order') }}">अर्डर ट्र्याक</a></li>
+            <li><a href="{{ url_for('cart.view_cart') }}">किनमेल झोला</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>सम्पर्क</h4>
+          <ul>
+            <li><i class="fas fa-map-marker-alt"></i> {{ site_settings.get('address', 'Urlabari, Morang, Nepal') }}</li>
+            {% if site_settings.get('phone') %}
+            <li><i class="fas fa-phone"></i> {{ site_settings.phone }}</li>
+            {% endif %}
+            {% if site_settings.get('email') %}
+            <li><i class="fas fa-envelope"></i> {{ site_settings.email }}</li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © {{ business_name }}. सर्वाधिकार सुरक्षित।
+      </div>
+    </div>
+  </footer>
+
+  {% if site_settings.get('whatsapp_number') %}
+  <a href="https://wa.me/{{ site_settings.whatsapp_number }}" class="whatsapp-float" target="_blank" rel="noopener" aria-label="WhatsApp मा सम्पर्क गर्नुहोस्">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+  {% endif %}
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

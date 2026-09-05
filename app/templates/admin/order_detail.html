@@ -1,0 +1,41 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Order {{ order.order_number }}{% endblock %}
+{% block content %}
+<h1>Order {{ order.order_number }}</h1>
+<div style="background:white;padding:1.5rem;border-radius:12px;margin-bottom:1.5rem;">
+  <p><strong>Customer:</strong> {{ order.customer_name }}</p>
+  <p><strong>Phone:</strong> {{ order.phone }}</p>
+  <p><strong>Address:</strong> {{ order.address or '—' }} {{ order.locality or '' }} {{ order.city or '' }}</p>
+  <p><strong>Delivery:</strong> {{ order.delivery_method }}</p>
+  <p><strong>Payment:</strong> {{ order.payment_method }}</p>
+  <p><strong>Notes:</strong> {{ order.notes or '—' }}</p>
+  <p><strong>Status:</strong> {{ order.status_label() }}</p>
+</div>
+<table class="table-admin mb-3">
+  <thead><tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr></thead>
+  <tbody>
+  {% for item in order.items %}
+  <tr>
+    <td>{{ item.product_name }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>रु. {{ '{:,.0f}'.format(item.unit_price|float) }}</td>
+    <td>रु. {{ '{:,.0f}'.format(item.subtotal|float) }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+<p><strong>Subtotal:</strong> रु. {{ '{:,.0f}'.format(order.subtotal|float) }}</p>
+<p><strong>Delivery:</strong> रु. {{ '{:,.0f}'.format(order.delivery_charge|float) }}</p>
+<p style="font-size:1.2rem;"><strong>Total:</strong> रु. {{ '{:,.0f}'.format(order.total|float) }}</p>
+
+<form method="post" action="{{ url_for('admin.order_status', id=order.id) }}" style="margin-top:1.5rem;">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <label>Update Status:</label>
+  <select name="status" class="form-control" style="max-width:240px;display:inline-block;">
+    {% for s, label in order.STATUS_LABELS.items() %}
+    <option value="{{ s }}" {% if order.status == s %}selected{% endif %}>{{ label }} ({{ s }})</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-primary btn-sm">Update</button>
+</form>
+{% endblock %}

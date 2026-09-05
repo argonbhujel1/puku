@@ -1,0 +1,37 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Products{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+  <h1 style="margin:0;">Products</h1>
+  <a href="{{ url_for('admin.product_new') }}" class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> Add Product</a>
+</div>
+<form method="get" style="margin-bottom:1rem;">
+  <input type="search" name="q" value="{{ q }}" placeholder="Search..." class="form-control" style="max-width:280px;display:inline-block;">
+  <button type="submit" class="btn btn-secondary btn-sm">Search</button>
+</form>
+<table class="table-admin">
+  <thead>
+    <tr><th>Image</th><th>Name</th><th>Price</th><th>Stock</th><th>Active</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+  {% for p in products %}
+  <tr>
+    <td>{% if p.image_url %}<img src="{{ p.image_url }}" alt="" style="width:48px;height:48px;object-fit:cover;border-radius:6px;">{% else %}—{% endif %}</td>
+    <td>{{ p.name }}{% if p.featured %} ⭐{% endif %}</td>
+    <td>रु. {{ '{:,.0f}'.format(p.price|float) }}</td>
+    <td style="{% if p.stock <= 0 %}color:#c0392b;{% elif p.is_low_stock() %}color:var(--mustard);{% endif %}">{{ p.stock }}</td>
+    <td>{{ '✓' if p.active else '✗' }}</td>
+    <td>
+      <a href="{{ url_for('admin.product_edit', id=p.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+      <form method="post" action="{{ url_for('admin.product_delete', id=p.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-sm" style="background:#c0392b;color:white;">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6">No products. <a href="{{ url_for('admin.product_new') }}">Add one</a>.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

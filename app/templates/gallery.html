@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}ग्यालेरी — {{ business_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h1>ग्यालेरी</h1>
+      <p>हाम्रा अचार र तयारीका झलकहरू</p>
+    </div>
+    {% if images %}
+    <div class="gallery-grid">
+      {% for img in images %}
+      <div class="gallery-item">
+        <img src="{{ img.image_url }}" alt="{{ img.title or 'ग्यालेरी' }}" loading="lazy">
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-images"></i>
+      <p>अहिलेसम्म तस्बिर थपिएको छैन।</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 style="margin-top:0;">Dashboard</h1>
+<div class="admin-cards">
+  <div class="admin-card">
+    <h3>आजका अर्डर</h3>
+    <div class="value">{{ today_orders }}</div>
+  </div>
+  <div class="admin-card">
+    <h3>कुल अर्डर</h3>
+    <div class="value">{{ total_orders }}</div>
+  </div>
+  <div class="admin-card">
+    <h3>आजको बिक्री</h3>
+    <div class="value">रु. {{ '{:,.0f}'.format(today_sales|float) }}</div>
+  </div>
+  <div class="admin-card">
+    <h3>कुल बिक्री</h3>
+    <div class="value">रु. {{ '{:,.0f}'.format(total_sales|float) }}</div>
+  </div>
+  <div class="admin-card">
+    <h3>Pending</h3>
+    <div class="value" style="color:var(--mustard);">{{ pending }}</div>
+  </div>
+  <div class="admin-card">
+    <h3>Out of Stock</h3>
+    <div class="value" style="color:#c0392b;">{{ out_of_stock }}</div>
+  </div>
+</div>
+
+{% if low_stock %}
+<h2>Low Stock</h2>
+<table class="table-admin mb-3">
+  <thead><tr><th>Product</th><th>Stock</th></tr></thead>
+  <tbody>
+  {% for p in low_stock %}
+  <tr><td><a href="{{ url_for('admin.product_edit', id=p.id) }}">{{ p.name }}</a></td><td>{{ p.stock }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<h2>Recent Orders</h2>
+<table class="table-admin">
+  <thead>
+    <tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr>
+  </thead>
+  <tbody>
+  {% for o in recent_orders %}
+  <tr>
+    <td><a href="{{ url_for('admin.order_detail', id=o.id) }}">{{ o.order_number }}</a></td>
+    <td>{{ o.customer_name }}</td>
+    <td>रु. {{ '{:,.0f}'.format(o.total|float) }}</td>
+    <td><span class="badge badge-{{ o.status }}">{{ o.status }}</span></td>
+    <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') if o.created_at else '' }}</td>
+  </tr>
+  {% else %}
+  <tr><td colspan="5">No orders yet.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

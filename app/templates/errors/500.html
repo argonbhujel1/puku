@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}सर्भर त्रुटि — {{ business_name }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container text-center" style="padding:4rem 1rem;">
+    <h1>५००</h1>
+    <p style="font-size:1.2rem;color:#666;">केही समस्या भयो। कृपया केही समयपछि फेरि प्रयास गर्नुहोस्।</p>
+    <a href="{{ url_for('main.home') }}" class="btn btn-primary mt-2">गृहपृष्ठ</a>
+  </div>
+</section>
+{% endblock %}

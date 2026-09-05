@@ -1,0 +1,53 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<h1>Site Settings</h1>
+<form method="post" style="background:white;padding:1.5rem;border-radius:12px;max-width:700px;">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  {% set labels = {
+    'business_name': 'Business Name',
+    'business_tagline': 'Tagline',
+    'phone': 'Phone',
+    'email': 'Email',
+    'address': 'Address',
+    'google_maps_url': 'Google Maps Embed URL',
+    'tiktok_url': 'TikTok URL',
+    'facebook_url': 'Facebook URL',
+    'instagram_url': 'Instagram URL',
+    'whatsapp_number': 'WhatsApp Number (with country code, e.g. 97798XXXXXXXX)',
+    'delivery_enabled': 'Delivery Enabled (1/0)',
+    'delivery_charge': 'Delivery Charge (Rs)',
+    'free_delivery_threshold': 'Free Delivery Above (Rs)',
+    'pickup_enabled': 'Pickup Enabled (1/0)',
+    'min_order_amount': 'Minimum Order Amount',
+    'payment_cod': 'COD Enabled (1/0)',
+    'payment_bank': 'Bank Transfer Enabled (1/0)',
+    'payment_qr': 'QR Payment Enabled (1/0)',
+    'payment_bank_info': 'Bank Payment Info',
+    'payment_qr_info': 'QR Payment Info',
+    'hero_title': 'Hero Title',
+    'hero_subtitle': 'Hero Subtitle',
+    'about_text': 'About Text',
+    'footer_text': 'Footer Text',
+    'why_choose_1_title': 'Why Choose 1 Title',
+    'why_choose_1_text': 'Why Choose 1 Text',
+    'why_choose_2_title': 'Why Choose 2 Title',
+    'why_choose_2_text': 'Why Choose 2 Text',
+    'why_choose_3_title': 'Why Choose 3 Title',
+    'why_choose_3_text': 'Why Choose 3 Text',
+    'why_choose_4_title': 'Why Choose 4 Title',
+    'why_choose_4_text': 'Why Choose 4 Text'
+  } %}
+  {% for k in keys %}
+  <div class="form-group">
+    <label>{{ labels.get(k, k) }}</label>
+    {% if k in ['about_text', 'footer_text', 'payment_bank_info', 'payment_qr_info', 'why_choose_1_text', 'why_choose_2_text', 'why_choose_3_text', 'why_choose_4_text'] %}
+    <textarea name="{{ k }}" class="form-control" rows="2">{{ settings.get(k, '') }}</textarea>
+    {% else %}
+    <input type="text" name="{{ k }}" class="form-control" value="{{ settings.get(k, '') }}">
+    {% endif %}
+  </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-primary">Save Settings</button>
+</form>
+{% endblock %}

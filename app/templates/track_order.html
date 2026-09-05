@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}अर्डर ट्र्याक — {{ business_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:560px;">
+    <h1 style="text-align:center;margin-bottom:1.5rem;">अर्डर ट्र्याक गर्नुहोस्</h1>
+
+    <form method="post" style="background:white;padding:1.5rem;border-radius:16px;box-shadow:var(--shadow);margin-bottom:2rem;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label for="order_number">अर्डर नम्बर</label>
+        <input type="text" id="order_number" name="order_number" class="form-control" placeholder="PKH-2026-00001" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">मोबाइल नम्बर</label>
+        <input type="tel" id="phone" name="phone" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">खोज्नुहोस्</button>
+    </form>
+
+    {% if error %}
+    <div class="alert alert-warning">{{ error }}</div>
+    {% endif %}
+
+    {% if order %}
+    <div style="background:white;padding:1.5rem;border-radius:16px;box-shadow:var(--shadow);">
+      <p><strong>अर्डर:</strong> {{ order.order_number }}</p>
+      <p><strong>जम्मा:</strong> रु. {{ '{:,.0f}'.format(order.total|float) }}</p>
+
+      {% set statuses = ['pending', 'confirmed', 'preparing', 'ready', 'out_for_delivery', 'delivered'] %}
+      {% set current_idx = statuses.index(order.status) if order.status in statuses else -1 %}
+      {% if order.status == 'cancelled' %}
+      <div class="alert alert-danger">यो अर्डर रद्द भएको छ।</div>
+      {% else %}
+      <div class="timeline" style="margin-top:1.5rem;">
+        {% for s in statuses %}
+        <div class="timeline-item {% if loop.index0 < current_idx %}done{% elif loop.index0 == current_idx %}active{% endif %}">
+          <h4>{{ order.STATUS_LABELS.get(s, s) }}</h4>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

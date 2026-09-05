@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}किनमेल झोला — {{ business_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <h1 style="margin-bottom:1.5rem;">किनमेल झोला</h1>
+    {% if items %}
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:2rem;align-items:start;" class="cart-layout">
+      <div>
+        {% for item in items %}
+        <div data-product-id="{{ item.product.id }}" style="display:flex;gap:1rem;padding:1.25rem;background:white;border-radius:12px;margin-bottom:1rem;box-shadow:var(--shadow);align-items:center;flex-wrap:wrap;">
+          <div style="width:80px;height:80px;border-radius:10px;overflow:hidden;background:#F5EDE0;flex-shrink:0;">
+            {% if item.product.image_url %}
+            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width:100%;height:100%;object-fit:cover;">
+            {% else %}
+            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem;">🫙</div>
+            {% endif %}
+          </div>
+          <div style="flex:1;min-width:140px;">
+            <h3 style="margin:0 0 0.25rem;font-size:1rem;">{{ item.product.name }}</h3>
+            <p style="margin:0;color:var(--achar-red);font-weight:600;">रु. {{ '{:,.0f}'.format(item.unit_price|float) }}</p>
+          </div>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" data-action="dec" aria-label="घटाउनुहोस्">−</button>
+            <input type="number" class="qty-input" value="{{ item.quantity }}" min="0" readonly>
+            <button type="button" class="qty-btn" data-action="inc" aria-label="बढाउनुहोस्">+</button>
+          </div>
+          <div style="font-weight:700;min-width:80px;text-align:right;">रु. {{ '{:,.0f}'.format(item.subtotal|float) }}</div>
+          <button type="button" class="btn-remove-cart" data-product-id="{{ item.product.id }}" style="background:none;border:none;color:#c0392b;cursor:pointer;font-size:1.1rem;" aria-label="हटाउनुहोस्">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="cart-summary">
+        <h3 style="margin:0 0 1rem;">सारांश</h3>
+        <div class="cart-summary-row">
+          <span>उप-जम्मा</span>
+          <span id="cart-subtotal">रु. {{ '{:,.0f}'.format(subtotal|float) }}</span>
+        </div>
+        <div class="cart-summary-row">
+          <span>डेलिभरी (अनुमान)</span>
+          <span id="cart-delivery">रु. {{ '{:,.0f}'.format(delivery_charge|float) }}</span>
+        </div>
+        <div class="cart-summary-row cart-summary-total">
+          <span>जम्मा</span>
+          <span id="cart-total">रु. {{ '{:,.0f}'.format(total|float) }}</span>
+        </div>
+        <a href="{{ url_for('orders.checkout') }}" class="btn btn-primary btn-block mt-2">अर्डर पूरा गर्नुहोस्</a>
+        <a href="{{ url_for('products.list_products') }}" class="btn btn-secondary btn-block mt-1">थप किनमेल</a>
+      </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-shopping-bag"></i>
+      <p>तपाईंको झोला खाली छ।</p>
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-primary mt-2">अचार हेर्नुहोस्</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+<style>
+@media (max-width: 768px) {
+  .cart-layout { grid-template-columns: 1fr !important; }
+}
+</style>
+{% endblock %}

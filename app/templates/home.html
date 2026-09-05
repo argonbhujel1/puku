@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% block title %}गृहपृष्ठ — {{ business_name }} | घरको स्वाद, अचारको असली मज्जा{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-content">
+      <h1>{{ site_settings.get('hero_title', 'घरको स्वाद, अचारको असली मज्जा') }}</h1>
+      <p>{{ site_settings.get('hero_subtitle', 'Urlabari बाट तयार गरिएको परम्परागत नेपाली अचार — माया र गुणस्तरीय सामग्रीसँग।') }}</p>
+      <div class="hero-buttons">
+        <a href="{{ url_for('products.list_products') }}" class="btn btn-primary">
+          <i class="fas fa-pepper-hot"></i> अचार हेर्नुहोस्
+        </a>
+        <a href="{{ url_for('products.list_products') }}" class="btn btn-secondary">
+          अहिले अर्डर गर्नुहोस्
+        </a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <span class="floating-ingredient fi-1">🌶️</span>
+      <span class="floating-ingredient fi-2">🍋</span>
+      <span class="floating-ingredient fi-3">🥭</span>
+      <span class="floating-ingredient fi-4">🧄</span>
+      <span class="floating-ingredient fi-5">🌿</span>
+      <span class="floating-ingredient fi-6">✨</span>
+      <div class="hero-jar" id="hero-jar">
+        <div class="jar-label">Puku Kosheli</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POPULAR PRODUCTS -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>हाम्रा लोकप्रिय अचारहरू</h2>
+      <p>घरको स्वाद बोकेका छानिएका अचारहरू</p>
+    </div>
+    {% if featured_products %}
+    <div class="product-grid">
+      {% for p in featured_products %}
+      <article class="product-card">
+        <a href="{{ url_for('products.detail', slug=p.slug) }}" class="product-card-img">
+          {% if p.image_url %}
+          <img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy" width="400" height="400">
+          {% else %}
+          <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;background:#F5EDE0;">🫙</div>
+          {% endif %}
+          {% if p.featured %}<span class="product-card-badge">लोकप्रिय</span>{% endif %}
+        </a>
+        <div class="product-card-body">
+          <h3><a href="{{ url_for('products.detail', slug=p.slug) }}">{{ p.name }}</a></h3>
+          <p class="product-card-desc">{{ p.description or '' }}</p>
+          <div class="product-meta">
+            <span class="product-price">रु. {{ '{:,.0f}'.format(p.price|float) }}</span>
+            {% if p.weight %}<span class="product-weight">{{ p.weight }}</span>{% endif %}
+          </div>
+          {% if p.is_in_stock() %}
+          <div class="product-actions">
+            <button class="btn btn-primary btn-sm btn-add-cart" data-product-id="{{ p.id }}">
+              <i class="fas fa-shopping-bag"></i> झोलामा राख्नुहोस्
+            </button>
+            <a href="{{ url_for('products.detail', slug=p.slug) }}" class="btn btn-secondary btn-sm">हेर्नुहोस्</a>
+          </div>
+          {% else %}
+          <span class="stock-out">स्टक सकियो</span>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-3">
+      <a href="{{ url_for('products.list_products') }}" class="btn btn-secondary">सबै अचार हेर्नुहोस्</a>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-jar"></i>
+      <p>अहिलेसम्म उत्पादन थपिएको छैन। Admin बाट उत्पादन थप्नुहोस्।</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>हामी किन फरक छौं?</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon">🌶️</div>
+        <h3>{{ site_settings.get('why_choose_1_title', 'असली नेपाली स्वाद') }}</h3>
+        <p>{{ site_settings.get('why_choose_1_text', 'परम्परागत विधि र स्थानीय मसलाबाट तयार।') }}</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🥭</div>
+        <h3>{{ site_settings.get('why_choose_2_title', 'गुणस्तरीय सामग्री') }}</h3>
+        <p>{{ site_settings.get('why_choose_2_text', 'छानिएका ताजा सामग्री मात्र प्रयोग।') }}</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">🏠</div>
+        <h3>{{ site_settings.get('why_choose_3_title', 'घरको स्वाद') }}</h3>
+        <p>{{ site_settings.get('why_choose_3_text', 'माया र हेरचाहसँग तयार गरिएको अचार।') }}</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon">❤️</div>
+        <h3>{{ site_settings.get('why_choose_4_title', 'मायाले तयार गरिएको') }}</h3>
+        <p>{{ site_settings.get('why_choose_4_text', 'प्रत्येक जारमा परिवारको हेरचाह।') }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+{% if categories %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>अचारका श्रेणीहरू</h2>
+    </div>
+    <div class="cat-grid">
+      {% for c in categories %}
+      <a href="{{ url_for('products.list_products', category=c.slug) }}" class="cat-card">
+        <h3>{{ c.name }}</h3>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- BRAND STORY -->
+<section class="story-section">
+  <div class="container">
+    <div class="section-header">
+      <h2>अचार केवल स्वाद होइन, सम्झना पनि हो।</h2>
+      <p>सामग्रीदेखि तपाईंसम्म — हाम्रो यात्रा</p>
+    </div>
+    <div class="story-steps">
+      <div class="story-step">
+        <div class="story-step-num">१</div>
+        <h3>सामग्री चयन</h3>
+        <p>स्थानीय र ताजा सामग्री छानिन्छ</p>
+      </div>
+      <div class="story-step">
+        <div class="story-step-num">२</div>
+        <h3>तयारी</h3>
+        <p>परम्परागत विधिले मायासँग बनाइन्छ</p>
+      </div>
+      <div class="story-step">
+        <div class="story-step-num">३</div>
+        <h3>प्याकेजिङ</h3>
+        <p>सफा र सुरक्षित जारमा भरिन्छ</p>
+      </div>
+      <div class="story-step">
+        <div class="story-step-num">४</div>
+        <h3>तपाईंसम्म</h3>
+        <p>घरको स्वाद तपाईंको टेबलमा</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY PREVIEW -->
+{% if gallery_images %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>ग्यालेरी</h2>
+    </div>
+    <div class="gallery-grid">
+      {% for img in gallery_images %}
+      <div class="gallery-item">
+        <img src="{{ img.image_url }}" alt="{{ img.title or 'ग्यालेरी' }}" loading="lazy">
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-3">
+      <a href="{{ url_for('main.gallery') }}" class="btn btn-secondary">सबै हेर्नुहोस्</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- REVIEWS -->
+{% if reviews %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>ग्राहकहरूको अनुभव</h2>
+    </div>
+    <div class="review-grid">
+      {% for r in reviews %}
+      <div class="review-card">
+        <div class="review-stars">
+          {% for i in range(r.rating) %}⭐{% endfor %}
+        </div>
+        <p>"{{ r.message }}"</p>
+        <div class="review-author">— {{ r.customer_name }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>तपाईंको खानामा अब अचारको स्वाद थप्नुहोस्।</h2>
+  <a href="{{ url_for('products.list_products') }}" class="btn btn-gold">
+    अहिले अर्डर गर्नुहोस्
+  </a>
+</section>
+
+<!-- CONTACT / LOCATION -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>हामी कहाँ छौं?</h2>
+      <p>{{ site_settings.get('address', 'Urlabari, Morang, Nepal') }}</p>
+    </div>
+    {% if site_settings.get('google_maps_url') %}
+    <div style="border-radius:16px;overflow:hidden;max-width:800px;margin:0 auto;box-shadow:var(--shadow);">
+      <iframe
+        src="{{ site_settings.google_maps_url if 'embed' in site_settings.google_maps_url else 'https://maps.google.com/maps?q=Urlabari,Morang,Nepal&output=embed' }}"
+        width="100%" height="350" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade" title="स्थान नक्सा"></iframe>
+    </div>
+    {% endif %}
+    <div class="text-center mt-3">
+      <a href="{{ url_for('main.contact') }}" class="btn btn-primary">सम्पर्क गर्नुहोस्</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

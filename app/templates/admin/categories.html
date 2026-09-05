@@ -1,0 +1,29 @@
+{% extends "admin/base_admin.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+  <h1 style="margin:0;">Categories</h1>
+  <a href="{{ url_for('admin.category_new') }}" class="btn btn-primary btn-sm">Add Category</a>
+</div>
+<table class="table-admin">
+  <thead><tr><th>Name</th><th>Slug</th><th>Active</th><th>Actions</th></tr></thead>
+  <tbody>
+  {% for c in categories %}
+  <tr>
+    <td>{{ c.name }}</td>
+    <td>{{ c.slug }}</td>
+    <td>{{ '✓' if c.active else '✗' }}</td>
+    <td>
+      <a href="{{ url_for('admin.category_edit', id=c.id) }}" class="btn btn-secondary btn-sm">Edit</a>
+      <form method="post" action="{{ url_for('admin.category_delete', id=c.id) }}" style="display:inline;" onsubmit="return confirm('Delete?');">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn-sm" style="background:#c0392b;color:white;">Delete</button>
+      </form>
+    </td>
+  </tr>
+  {% else %}
+  <tr><td colspan="4">No categories.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

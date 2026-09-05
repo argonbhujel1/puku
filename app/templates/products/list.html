@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}हाम्रा अचारहरू — {{ business_name }}{% endblock %}
+{% block meta_desc %}Puku Kosheli Hub का सबै अचार उत्पादनहरू — आँप, खुर्सानी, कागती र थप।{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h1>हाम्रा अचारहरू</h1>
+      <p>घरको स्वाद बोकेका परम्परागत नेपाली अचार</p>
+    </div>
+
+    <form method="get" class="mb-3" style="display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;">
+      <input type="search" name="q" value="{{ q }}" placeholder="खोज्नुहोस्..." class="form-control" style="max-width:220px;">
+      <select name="category" class="form-control" style="max-width:180px;">
+        <option value="">सबै श्रेणी</option>
+        {% for c in categories %}
+        <option value="{{ c.slug }}" {% if current_category == c.slug %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+      <select name="sort" class="form-control" style="max-width:160px;">
+        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>नयाँ</option>
+        <option value="popular" {% if sort == 'popular' %}selected{% endif %}>लोकप्रिय</option>
+        <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>मूल्य ↑</option>
+        <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>मूल्य ↓</option>
+      </select>
+      <select name="availability" class="form-control" style="max-width:140px;">
+        <option value="">सबै</option>
+        <option value="in_stock" {% if availability == 'in_stock' %}selected{% endif %}>स्टकमा</option>
+      </select>
+      <button type="submit" class="btn btn-primary btn-sm">फिल्टर</button>
+    </form>
+
+    {% if products %}
+    <div class="product-grid" id="product-grid">
+      {% for p in products %}
+      {% include 'products/_card.html' %}
+      {% endfor %}
+    </div>
+    {% if pagination and pagination.pages > 1 %}
+    <div class="text-center mt-3">
+      {% if pagination.has_prev %}
+      <a href="{{ url_for('products.list_products', page=pagination.prev_num, q=q, category=current_category, sort=sort, availability=availability) }}" class="btn btn-secondary btn-sm">← अघिल्लो</a>
+      {% endif %}
+      <span style="margin:0 1rem;">{{ pagination.page }} / {{ pagination.pages }}</span>
+      {% if pagination.has_next %}
+      <a href="{{ url_for('products.list_products', page=pagination.next_num, q=q, category=current_category, sort=sort, availability=availability) }}" class="btn btn-secondary btn-sm">अर्को →</a>
+      {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+      <i class="fas fa-search"></i>
+      <p>कुनै उत्पादन फेला परेन। Admin बाट उत्पादन थप्नुहोस् वा फिल्टर परिवर्तन गर्नुहोस्।</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

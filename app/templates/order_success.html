@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}अर्डर सफल — {{ business_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:600px;text-align:center;">
+    <div style="font-size:4rem;margin-bottom:1rem;">🎉</div>
+    <h1 style="color:var(--natural-green);">तपाईंको अर्डर सफल भयो!</h1>
+    <p style="font-size:1.1rem;margin-bottom:2rem;">धन्यवाद! हामी चाँडै सम्पर्क गर्नेछौं।</p>
+
+    <div style="background:white;padding:1.5rem;border-radius:16px;box-shadow:var(--shadow);text-align:left;margin-bottom:1.5rem;">
+      <p><strong>अर्डर नम्बर:</strong> <span style="color:var(--achar-red);font-size:1.2rem;">{{ order.order_number }}</span></p>
+      <p><strong>स्थिति:</strong> {{ order.status_label() }}</p>
+      <p><strong>नाम:</strong> {{ order.customer_name }}</p>
+      <p><strong>मोबाइल:</strong> {{ order.phone }}</p>
+      <p><strong>विधि:</strong> {% if order.delivery_method == 'pickup' %}आफैं लिनुहोस्{% else %}डेलिभरी{% endif %}</p>
+      {% if order.address %}<p><strong>ठेगाना:</strong> {{ order.address }}{% if order.locality %}, {{ order.locality }}{% endif %}{% if order.city %}, {{ order.city }}{% endif %}</p>{% endif %}
+      <hr style="border:none;border-top:1px solid var(--light-border);margin:1rem 0;">
+      <h3 style="margin:0 0 0.75rem;">वस्तुहरू</h3>
+      {% for item in order.items %}
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.95rem;">
+        <span>{{ item.product_name }} × {{ item.quantity }}</span>
+        <span>रु. {{ '{:,.0f}'.format(item.subtotal|float) }}</span>
+      </div>
+      {% endfor %}
+      <hr style="border:none;border-top:1px solid var(--light-border);margin:1rem 0;">
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1.1rem;color:var(--achar-red);">
+        <span>जम्मा</span>
+        <span>रु. {{ '{:,.0f}'.format(order.total|float) }}</span>
+      </div>
+    </div>
+
+    <p style="font-size:0.9rem;color:#666;margin-bottom:1.5rem;">अर्डर ट्र्याक गर्न अर्डर नम्बर र मोबाइल सुरक्षित राख्नुहोस्।</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="{{ url_for('main.track_order') }}" class="btn btn-primary">अर्डर ट्र्याक गर्नुहोस्</a>
+      <a href="{{ url_for('main.home') }}" class="btn btn-secondary">गृहपृष्ठ</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

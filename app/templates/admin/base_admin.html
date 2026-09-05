@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}Admin{% endblock %} — Puku Kosheli Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <h2>🌶️ Puku Admin</h2>
+      <a href="{{ url_for('admin.dashboard') }}" class="{% if request.endpoint == 'admin.dashboard' %}active{% endif %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+      <a href="{{ url_for('admin.products') }}" class="{% if 'product' in (request.endpoint or '') %}active{% endif %}"><i class="fas fa-jar"></i> Products</a>
+      <a href="{{ url_for('admin.categories') }}" class="{% if 'categor' in (request.endpoint or '') %}active{% endif %}"><i class="fas fa-tags"></i> Categories</a>
+      <a href="{{ url_for('admin.orders') }}" class="{% if 'order' in (request.endpoint or '') %}active{% endif %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+      <a href="{{ url_for('admin.reviews') }}" class="{% if 'review' in (request.endpoint or '') %}active{% endif %}"><i class="fas fa-star"></i> Reviews</a>
+      <a href="{{ url_for('admin.gallery') }}" class="{% if 'gallery' in (request.endpoint or '') %}active{% endif %}"><i class="fas fa-images"></i> Gallery</a>
+      <a href="{{ url_for('admin.settings') }}" class="{% if 'settings' in (request.endpoint or '') %}active{% endif %}"><i class="fas fa-cog"></i> Settings</a>
+      <a href="{{ url_for('main.home') }}" target="_blank"><i class="fas fa-external-link-alt"></i> View Site</a>
+      <a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </aside>
+    <main class="admin-main">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>
