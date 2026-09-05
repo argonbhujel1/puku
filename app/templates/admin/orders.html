@@ -10,7 +10,7 @@
 </div>
 <table class="table-admin">
   <thead>
-    <tr><th>Order #</th><th>Customer</th><th>Phone</th><th>Total</th><th>Status</th><th>Date</th></tr>
+    <tr><th>Order #</th><th>Customer</th><th>Phone</th><th>Total</th><th>Status</th><th>Date</th><th>Action</th></tr>
   </thead>
   <tbody>
   {% for o in orders %}
@@ -21,9 +21,20 @@
     <td>रु. {{ '{:,.0f}'.format(o.total|float) }}</td>
     <td><span class="badge badge-{{ o.status }}">{{ o.status }}</span></td>
     <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') if o.created_at else '' }}</td>
+    <td>
+      <form method="post" action="{{ url_for('admin.order_status', id=o.id) }}" style="display:flex;gap:0.35rem;align-items:center;">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <select name="status" class="form-control" style="width:auto;padding:0.35rem 0.5rem;font-size:0.8rem;">
+          {% for s, label in o.STATUS_LABELS.items() %}
+          <option value="{{ s }}" {% if o.status == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+      </form>
+    </td>
   </tr>
   {% else %}
-  <tr><td colspan="6">No orders.</td></tr>
+  <tr><td colspan="7">No orders.</td></tr>
   {% endfor %}
   </tbody>
 </table>

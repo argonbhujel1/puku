@@ -22,12 +22,14 @@ def dashboard():
     today_orders = Order.query.filter(Order.created_at >= today_start).count()
     pending = Order.query.filter_by(status='pending').count()
 
+    # Only count delivered orders as confirmed sales (pending not included)
+    sold_statuses = ('delivered', 'out_for_delivery', 'ready', 'preparing', 'confirmed')
     total_sales = db.session.query(func.coalesce(func.sum(Order.total), 0)).filter(
-        Order.status != 'cancelled'
+        Order.status.in_(sold_statuses)
     ).scalar() or 0
     today_sales = db.session.query(func.coalesce(func.sum(Order.total), 0)).filter(
         Order.created_at >= today_start,
-        Order.status != 'cancelled'
+        Order.status.in_(sold_statuses)
     ).scalar() or 0
 
     low_stock = Product.query.filter(
@@ -263,11 +265,15 @@ def order_detail(id):
 @admin_required
 def order_status(id):
     order = Order.query.get_or_404(id)
-    new_status = request.form.get('status', '')
+    new_status = (request.form.get('status') or '').strip()
     if new_status in Order.STATUS_LABELS:
         order.status = new_status
+        from datetime import datetime
+        order.updated_at = datetime.utcnow()
         db.session.commit()
-        flash('स्टेटस अपडेट भयो।', 'success')
+        flash(f'स्टेटस अपडेट: {order.status_label()}', 'success')
+    else:
+        flash(f'अवैध स्टेटस: {new_status}', 'danger')
     return redirect(url_for('admin.order_detail', id=id))
 
 
