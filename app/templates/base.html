@@ -91,6 +91,20 @@
         <div class="footer-brand">
           <h3>Puku Kosheli Hub</h3>
           <p>{{ site_settings.get('footer_text', 'घरको स्वाद, अचारको असली मज्जा। Urlabari, Morang बाट तयार।') }}</p>
+          <div class="footer-custom-links" style="margin:0.75rem 0;display:flex;flex-wrap:wrap;gap:0.75rem;">
+            {% if site_settings.get('footer_link1_text') and site_settings.get('footer_link1_url') %}
+            <a href="{{ site_settings.footer_link1_url }}" target="_blank" rel="noopener" style="color:var(--mustard);font-weight:600;">{{ site_settings.footer_link1_text }}</a>
+            {% endif %}
+            {% if site_settings.get('footer_link2_text') and site_settings.get('footer_link2_url') %}
+            <a href="{{ site_settings.footer_link2_url }}" target="_blank" rel="noopener" style="color:var(--mustard);font-weight:600;">{{ site_settings.footer_link2_text }}</a>
+            {% endif %}
+            {% if site_settings.get('footer_link3_text') and site_settings.get('footer_link3_url') %}
+            <a href="{{ site_settings.footer_link3_url }}" target="_blank" rel="noopener" style="color:var(--mustard);font-weight:600;">{{ site_settings.footer_link3_text }}</a>
+            {% endif %}
+            {% if site_settings.get('footer_link4_text') and site_settings.get('footer_link4_url') %}
+            <a href="{{ site_settings.footer_link4_url }}" target="_blank" rel="noopener" style="color:var(--mustard);font-weight:600;">{{ site_settings.footer_link4_text }}</a>
+            {% endif %}
+          </div>
           <div class="social-links">
             {% if site_settings.get('tiktok_url') %}
             <a href="{{ site_settings.tiktok_url }}" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>

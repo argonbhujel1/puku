@@ -54,11 +54,17 @@
     </div>
   </div>
   <div class="form-group">
-    <label>Image</label>
+    <label>Image (Upload)</label>
     {% if product and product.image_url %}
     <p><img src="{{ product.image_url }}" alt="" style="width:100px;border-radius:8px;"></p>
     {% endif %}
     <input type="file" name="image" accept="image/*" class="form-control">
+    <small style="color:#888;">Cloudinary keys Vercel मा सेट भएमा upload काम गर्छ।</small>
+  </div>
+  <div class="form-group">
+    <label>Or Image URL (direct link)</label>
+    <input type="url" name="image_url" class="form-control" value="{{ product.image_url if product and product.image_url else '' }}" placeholder="https://...">
+    <small style="color:#888;">Cloudinary नभए image link यहाँ paste गर्नुहोस् (ImgBB, Google Drive public link, आदि)।</small>
   </div>
   <div class="form-group">
     <label><input type="checkbox" name="featured" value="1" {% if product and product.featured %}checked{% endif %}> Featured</label>

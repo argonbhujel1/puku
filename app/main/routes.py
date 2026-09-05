@@ -6,12 +6,16 @@ from app.extensions import db
 
 @bp.route('/')
 def home():
-    featured = Product.query.filter_by(active=True, featured=True).order_by(Product.created_at.desc()).limit(8).all()
-    if not featured:
-        featured = Product.query.filter_by(active=True).order_by(Product.created_at.desc()).limit(8).all()
-    categories = Category.query.filter_by(active=True).order_by(Category.name).all()
-    reviews = Review.query.filter_by(approved=True).order_by(Review.created_at.desc()).limit(6).all()
-    gallery = GalleryImage.query.filter_by(active=True).order_by(GalleryImage.created_at.desc()).limit(8).all()
+    featured, categories, reviews, gallery = [], [], [], []
+    try:
+        featured = Product.query.filter_by(active=True, featured=True).order_by(Product.created_at.desc()).limit(8).all()
+        if not featured:
+            featured = Product.query.filter_by(active=True).order_by(Product.created_at.desc()).limit(8).all()
+        categories = Category.query.filter_by(active=True).order_by(Category.name).all()
+        reviews = Review.query.filter_by(approved=True).order_by(Review.created_at.desc()).limit(6).all()
+        gallery = GalleryImage.query.filter_by(active=True).order_by(GalleryImage.created_at.desc()).limit(8).all()
+    except Exception as e:
+        print(f'Home query error: {e}')
     return render_template(
         'home.html',
         featured_products=featured,

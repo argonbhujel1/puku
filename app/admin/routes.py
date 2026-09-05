@@ -89,6 +89,8 @@ def product_new():
             f = request.files['image']
             if f and f.filename and allowed_file(f.filename):
                 image_url, public_id = upload_to_cloudinary(f, folder='puku-kosheli/products')
+        if not image_url:
+            image_url = request.form.get('image_url', '').strip() or None
 
         product = Product(
             name=name,
@@ -145,6 +147,9 @@ def product_edit(id):
                 if url:
                     product.image_url = url
                     product.cloudinary_public_id = pid
+        manual_url = request.form.get('image_url', '').strip()
+        if manual_url and not (request.files.get('image') and request.files['image'].filename):
+            product.image_url = manual_url
 
         db.session.commit()
         flash('उत्पादन अपडेट भयो।', 'success')
@@ -383,6 +388,10 @@ def settings():
         'payment_cod', 'payment_bank', 'payment_qr', 'payment_bank_info',
         'payment_qr_info', 'hero_title', 'hero_subtitle', 'about_text',
         'footer_text',
+        'footer_link1_text', 'footer_link1_url',
+        'footer_link2_text', 'footer_link2_url',
+        'footer_link3_text', 'footer_link3_url',
+        'footer_link4_text', 'footer_link4_url',
         'why_choose_1_title', 'why_choose_1_text',
         'why_choose_2_title', 'why_choose_2_text',
         'why_choose_3_title', 'why_choose_3_text',
